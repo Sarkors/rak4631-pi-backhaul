@@ -1,14 +1,13 @@
 
 # Rak4631-Pi2w-Backhaul-Power-System
 
-# Solar Backhaul Node — Build & Deploy Guide
-
 ## Why I made this & What This Does
 
 For our Navamesh project, we need to make it as cost effective and low powered as possible just due to lack of resources available in the Navajo region. We have made soil sensor nodes, that send their telemtry to a specifc channel in meshtastic, and that telemtry gets sent to our MQTT ingestor and uploaded into InfluxDB and eventually our Azure Cloud setup. 
 
 We wanted to make a backhaul/field access system, that allows the farmer to get the most recent telemtry reading of his farms if he were out in the field. 
-<img width="1408" height="768" alt="image" src="https://github.com/user-attachments/assets/d7cecc38-3237-4ccc-af22-4f40a35308ca" />
+<img width="1408" height="768" alt="backhbaul" src="https://github.com/user-attachments/assets/32edec5e-ae00-4136-af94-af6e75b51784" />
+
 The system we made allows the farmer to send PI_ON in a meshtastic chat, and the radio in the field access node that is constantly being powered (low power light sleep mode) listens for the PI_ON, when PI_ON is sent IO1 on the RAK pulses low and that triggers a button press in our SparkFun power switch that allows power to feed into pi and turn on. 
 
 This guide walks you through building a solar-powered backhaul node that can be remotely woken up or shut down via a Meshtastic mesh message. A field user sends `PI_ON` over the mesh, the RAK radio receives it and pulses a GPIO pin, which triggers the SparkFun Soft Power Switch to boot a Raspberry Pi Zero 2W running WiFi HaLow and Reticulum backhaul.
