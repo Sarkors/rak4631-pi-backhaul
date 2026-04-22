@@ -1,14 +1,21 @@
-
 # Rak4631-Pi2w-Backhaul-Power-System
 
-## Why I made this & What This Does
+## Why I Made This
 
-For our Navamesh project, we need to make it as cost effective and low powered as possible just due to lack of resources available in the Navajo region. We have made soil sensor nodes, that send their telemtry to a specifc channel in meshtastic, and that telemtry gets sent to our MQTT ingestor and uploaded into InfluxDB and eventually our Azure Cloud setup. 
+For our Navamesh project, we need to make it as cost effective and low powered as possible just due to lack of resources available in the Navajo region. We have made soil sensor nodes that send their telemetry to a specific channel in Meshtastic, and that telemetry gets sent to our MQTT ingestor and uploaded into InfluxDB and eventually our Azure Cloud setup.
 
-We wanted to make a backhaul/field access system, that allows the farmer to get the most recent telemtry reading of his farms if he were out in the field. 
-<img width="1408" height="768" alt="backhbaul" src="https://github.com/user-attachments/assets/32edec5e-ae00-4136-af94-af6e75b51784" />
+We wanted to make a backhaul/field access system that allows the farmer to get the most recent telemetry reading of his farms if he were out in the field.
 
-The system we made allows the farmer to send PI_ON in a meshtastic chat, and the radio in the field access node that is constantly being powered (low power light sleep mode) listens for the PI_ON, when PI_ON is sent IO1 on the RAK pulses low and that triggers a button press in our SparkFun power switch that allows power to feed into pi and turn on. 
+<img width="1408" height="768" alt="backhbaul" src="https://github.com/user-attachments/assets/7c296b87-75ba-4d7f-96b4-e08c7bbc4d22" />
+
+
+The system we made allows the farmer to send `PI_ON` in a Meshtastic chat, and the radio in the field access node that is constantly being powered (low power light sleep mode) listens for the `PI_ON`. When `PI_ON` is sent, IO1 on the RAK pulses LOW and that triggers a button press in our SparkFun power switch that allows power to feed into the Pi and turn it on.
+
+---
+
+# Solar Backhaul Node — Build & Deploy Guide
+
+## What This Does
 
 This guide walks you through building a solar-powered backhaul node that can be remotely woken up or shut down via a Meshtastic mesh message. A field user sends `PI_ON` over the mesh, the RAK radio receives it and pulses a GPIO pin, which triggers the SparkFun Soft Power Switch to boot a Raspberry Pi Zero 2W running WiFi HaLow and Reticulum backhaul.
 
@@ -84,13 +91,26 @@ ls src/modules/PowerTriggerModule.*
 
 You should see `PowerTriggerModule.cpp` and `PowerTriggerModule.h`.
 
-### 3. Confirm Modules.cpp registration
+### 3. Register the module in Modules.cpp
+
+Open `src/modules/Modules.cpp` and add the following two lines alongside the other module registrations:
+
+```cpp
+// At the top with the other includes:
+#include "PowerTriggerModule.h"
+
+// Inside the initModules() function alongside the other module instantiations:
+powerTriggerModule = new PowerTriggerModule();
+```
+
+To confirm it's already there:
 
 ```powershell
 Select-String -Path src/modules/Modules.cpp -Pattern "PowerTrigger"
 ```
 
 Should show:
+
 ```
 #include "PowerTriggerModule.h"
 powerTriggerModule = new PowerTriggerModule();
@@ -222,7 +242,7 @@ Set it back to `true` before field deployment.
 Always confirm you are on the correct branch before building and flashing:
 
 ```bash
-git branch   # asterisk shows current branch
+git branch          # asterisk shows current branch
 git checkout backhaul   # switch to backhaul
 git checkout develop    # switch to sensor nodes
 ```
